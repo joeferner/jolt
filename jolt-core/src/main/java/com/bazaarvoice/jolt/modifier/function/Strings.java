@@ -15,8 +15,10 @@
  */
 package com.bazaarvoice.jolt.modifier.function;
 
+import com.bazaarvoice.jolt.JsonUtils;
 import com.bazaarvoice.jolt.common.Optional;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -157,6 +159,37 @@ public class Strings {
       }
     }
 
+    public static final class json implements Function {
+        @Override
+        public Optional<Object> apply(Object... args) {
+            if (args.length == 1 && args[0] instanceof List) {
+                args = ((List) args[0]).toArray();
+            }
+            if (args.length == 0) {
+                return Optional.empty();
+            } else if (args.length == 1) {
+                return evaluate(args[0]);
+            } else {
+                List<Object> results = new ArrayList<>();
+                for (Object arg : args) {
+                    Optional<Object> value = evaluate(arg);
+                    results.add(value.isPresent() ? value.get() : null);
+                }
+                return Optional.of(results);
+            }
+        }
+
+        private Optional<Object> evaluate(Object arg) {
+            if (arg instanceof String) {
+                return evaluateString((String) arg);
+            }
+            return Optional.empty();
+        }
+
+        private Optional<Object> evaluateString(String str) {
+            return Optional.of(JsonUtils.jsonToObject(str));
+        }
+    }
 
     public static final class leftPad extends Function.ArgDrivenListFunction<String> {
         @Override

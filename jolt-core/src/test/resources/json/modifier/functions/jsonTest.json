@@ -1,0 +1,36 @@
+{
+    "input": {
+        "empty": null,
+        "array": "[\"a\",\"b\"]",
+        "object": "{\"testKey\":\"testValue\"}"
+    },
+
+    "spec": {
+        "arrayEmpty": "=json('[]')",
+        "arrayWithValue": "=json('[\"a\", {\"a\":\"b\"}, null]')",
+        "multipleArgs": "=json('{\"a\":\"b\"}', '[\"a\"]', null)", // multiple args treat as array
+        "fetchEmpty": "=json(@(1,empty))",
+        "fetchArray": "=json(@(1,array))",
+        "fetchObject": "=json(@(1,object))",
+        "invalidJson": "=json('bad')"
+    },
+
+    "context": {},
+
+    "OVERWRITR": {
+        //
+        // the input
+        "empty": null,
+        "array": "[\"a\",\"b\"]",
+        "object": "{\"testKey\":\"testValue\"}",
+        //
+        // the things modify added
+        "arrayEmpty": [],
+        "arrayWithValue": ["a", {"a": "b"}, null],
+        "multipleArgs": [{"a": "b"}, ["a"], null],
+        "fetchArray": ["a", "b"],
+        "fetchObject": {
+            "testKey": "testValue"
+        }
+    }
+},
